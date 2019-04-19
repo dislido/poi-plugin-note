@@ -1,20 +1,24 @@
-import React, { useState } from 'react';
+import * as React from 'react';
+import { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import NoteEditor from './note-editor';
 
-/**
- * @param {string} text
- */
-function getTitle(text) {
+function getTitle(text: string) {
   return text.split('\n')[0];
 }
 
-export default function Note({ title, text, onSave, onDelete }) {
+interface NoteProps {
+  title: string;
+  text: string;
+  onSave: (title: string, text: string) => void;
+  onDelete: () => void;
+}
+export default function Note({ title, text, onSave, onDelete }: NoteProps) {
   const [editmode, setEditmode] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
   const showTitle = title || !showDetail;
 
-  const deleteHandler = (e) => {
+  const deleteHandler = (e: React.MouseEvent<Button, MouseEvent>) => {
     e.stopPropagation();
     onDelete();
   }

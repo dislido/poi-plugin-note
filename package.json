@@ -1,15 +1,23 @@
 {
   "name": "poi-plugin-note",
   "version": "0.5.0",
-  "description": "简易笔记本",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
   },
-  "title":"提督笔记",
+  "poiPlugin": {
+    "title": "提督笔记",
+    "description": "简易笔记本"
+  },
   "author": {
     "name": "dislido",
     "url": "https://github.com/dislido"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^11.13.5",
+    "@types/react": "^16.8.13",
+    "@types/react-bootstrap": "^0.32.17"
+  }
 }
