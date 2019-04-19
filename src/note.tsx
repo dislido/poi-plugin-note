@@ -22,12 +22,27 @@ export default function Note({ title, text, onSave, onDelete }: NoteProps) {
     e.stopPropagation();
     onDelete();
   }
-  if (editmode) return <NoteEditor title={title} text={text} onSave={onSave} onCancel={() => setEditmode(false)}/>;
+  if (editmode) return (
+    <NoteEditor
+      title={title}
+      text={text}
+      onSave={(title, text) => {
+        onSave(title, text);
+        setEditmode(false);
+      }}
+      onCancel={() => setEditmode(false)}
+    />
+  );
   return <div className="note-card" onClick={() => setShowDetail(!showDetail)}>
     {showTitle && <p>{title || getTitle(text)}</p>}
     {showDetail && <p style={{ overflowWrap: 'break-word' }}>{text}</p>}
-    <Button onClick={deleteHandler} className="del-note-button">
-      X
-    </Button>
+    <div className="note-button">
+      <Button onClick={() => setEditmode(true)}>
+        📝
+      </Button>
+      <Button onClick={deleteHandler}>
+        X
+      </Button>
+    </div>
   </div>;
 }

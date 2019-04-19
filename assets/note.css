@@ -1,0 +1,23 @@
+#poi-plugin-note .note-card:hover {
+  background-color: #ffffff22;
+}
+#poi-plugin-note .note-card {
+  outline: #FFFFFF22 1px solid;
+  margin: 5px 0;
+  position: relative;
+}
+#poi-plugin-note .note-card .note-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 29px;
+  line-height: 14px;
+  visibility: hidden;
+}
+#poi-plugin-note .note-card .note-button button {
+  height: 29px;
+  line-height: 14px;
+}
+#poi-plugin-note .note-card:hover .note-button {
+  visibility: visible;
+}

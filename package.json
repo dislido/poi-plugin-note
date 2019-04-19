@@ -1,10 +1,11 @@
 {
   "name": "poi-plugin-note",
-  "version": "0.5.0",
-  "main": "dist/index.js",
+  "version": "0.6.0",
+  "main": "./dist",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+    "build": "npm run link&&tsc",
+    "link": "mklink /D node_modules E:\\_study-programer\\Nodejs\\project\\poi\\node_modules"
   },
   "poiPlugin": {
     "title": "提督笔记",

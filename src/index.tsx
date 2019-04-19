@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
+import { List } from 'immutable';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Button } from 'react-bootstrap';
@@ -7,76 +8,54 @@ import Note from './note';
 import NoteEditor from './note-editor';
 
 const dbPath = path.resolve(__dirname, 'db.json');
+const initDb: List<NoteItem> = List.of();
 
 export const reactClass = function NotePlugin() {
-  const [db, updateDb] = useState([] as NoteItem[]);
+  const [db, updateDb] = useState(initDb);
   const [showAddNote, setShowAddNote] = useState(false);
 
-  const saveDb = (newDb: NoteItem[]) => {
+  const saveDb = (newDb: List<NoteItem>) => {
     updateDb(newDb);
-    fs.writeFileSync(dbPath, JSON.stringify(newDb));
+    fs.writeFileSync(dbPath, JSON.stringify(newDb.toJS()));
   };
 
   const deleteNote = (index: number) => {
-    saveDb(db.filter((it: NoteItem, id: number) => id !== index));
+    saveDb(db.delete(index));
   };
 
   const addNote = (title: string, text: string) => {
     if (!title && !text) return;
-    db.unshift({ title, text, updateTime: Date.now() });
     setShowAddNote(false);
-    saveDb(db);
+    saveDb(db.unshift({ title, text, updateTime: Date.now() }));
   };
 
   const updateNote = (index: number, title: string, text: string) => {
     if (!title && !text) return deleteNote(index);
-    const note = db.splice(index, 1)[0];
-    note.title = title;
-    note.text = text;
-    note.updateTime = Date.now();
-    db.unshift(note);
     setShowAddNote(false);
-    saveDb(db);
+    const db2 = db.update(index, (it) => ({
+      title,
+      text,
+      updateTime: Date.now(),
+    }));
+    saveDb(db2);
   };
 
 
   useEffect(() => {
     if (fs.existsSync(dbPath)) {
-      updateDb(JSON.parse(fs.readFileSync(dbPath) as unknown as string));
+      updateDb(List(JSON.parse(fs.readFileSync(dbPath) as unknown as string)));
     } else {
       fs.writeFileSync(dbPath, JSON.stringify(db));
     }
   }, []);
-
   return (
     <>
-      <style>{`
-        #poi-plugin-note .note-card:hover {
-          background-color: #ffffff22;
-        }
-        #poi-plugin-note .note-card {
-          outline: #FFFFFF22 1px solid;
-          margin: 5px 0;
-          position: relative;
-        }
-        #poi-plugin-note .note-card .del-note-button {
-          position: absolute;
-          right: 0;
-          top: 0;
-          height: 29px;
-          line-height: 14px;
-          visibility: hidden;
-        }
-        #poi-plugin-note .note-card:hover .del-note-button {
-          visibility: visible;
-        }
-      `}
-      </style>
+      <link rel="stylesheet" href={path.resolve(__dirname, '../assets/note.css')} />
       <div>
         {!showAddNote && <Button onClick={() => setShowAddNote(true)}>添加</Button>}
         {showAddNote && <NoteEditor onSave={addNote} onCancel={() => setShowAddNote(false)} />}
       </div>
-      {db.map(({ title, text, updateTime }, index) => (
+      {db.map(({ title, text, updateTime }: NoteItem, index: number) => (
         <Note
           key={updateTime}
           title={title}
